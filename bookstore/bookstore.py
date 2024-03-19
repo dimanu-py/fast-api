@@ -13,3 +13,8 @@ BOOKS = [
 @app.get("/")
 async def root() -> dict[str, str]:
     return {"message": "Hello World"}
+
+
+@app.get("/books")
+async def read_all_books() -> list[dict[str, str]]:
+    return BOOKS
