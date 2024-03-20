@@ -45,3 +45,12 @@ async def filter_books_by_author_and_category(author: str, category: str) -> lis
 async def create_book(book: dict[str, str] = Body()) -> dict[str, str]:
     BOOKS.append(book)
     return {"message": "Book created successfully"}
+
+
+@app.put("/books/update_book")
+async def update_book(updated_book: dict[str, str] = Body()) -> dict[str, str]:
+    for book in BOOKS:
+        if book["title"].lower() == updated_book["title"].lower():
+            book.update(updated_book)
+            return {"message": "Book updated successfully"}
+    return {"message": "Book not found"}
