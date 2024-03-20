@@ -1,9 +1,12 @@
-from pydantic import BaseModel, Field
+from typing import Optional
+
+from pydantic import BaseModel, Field, PositiveInt
+
 
 class BookRequest(BaseModel):
     """Request schema for creating a book"""
 
-    book_id: int = Field(gt=0, alias="id")
+    book_id: Optional[PositiveInt] = Field(alias="id", default=None)
     title: str = Field(min_length=1, max_length=100)
     author: str = Field(min_length=1, max_length=100)
     category: str = Field(min_length=1, max_length=100)
