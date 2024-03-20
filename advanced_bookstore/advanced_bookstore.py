@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 
 from advanced_bookstore.book import Book
 
@@ -19,3 +19,8 @@ books = [
 async def read_all_books():
     return books
 
+
+@app.post("/books/create_book")
+async def create_book(book = Body()) -> dict[str, str]:
+    books.append(Book(**book))
+    return {"message": "Book has been successfully created"}
