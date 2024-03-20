@@ -36,6 +36,11 @@ async def filter_books_by_category(category: str) -> list[dict[str, str]]:
     return [book for book in BOOKS if book["category"].lower() == category.lower()]
 
 
+@app.get("/books/by_author/")
+async def filter_books_by_author(author: str) -> list[dict[str, str]]:
+    return [book for book in BOOKS if book["author"].lower() == author.lower()]
+
+
 @app.get("/books/{author}/")
 async def filter_books_by_author_and_category(author: str, category: str) -> list[dict[str, str]]:
     return [book for book in BOOKS if book["author"].lower() == author.lower() and book["category"].lower() == category.lower()]
