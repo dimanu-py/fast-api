@@ -27,3 +27,8 @@ async def read_book(book_title: str) -> dict[str, str]:
         if book["title"].lower() == book_title.lower():
             return book
     return {"message": "Book not found"}
+
+
+@app.get("/books/")
+async def filter_books_by_category(category: str) -> list[dict[str, str]]:
+    return [book for book in BOOKS if book["category"].lower() == category.lower()]
