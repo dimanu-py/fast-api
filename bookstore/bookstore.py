@@ -54,3 +54,12 @@ async def update_book(updated_book: dict[str, str] = Body()) -> dict[str, str]:
             book.update(updated_book)
             return {"message": "Book updated successfully"}
     return {"message": "Book not found"}
+
+
+@app.delete("/books/delete_book/{book_title}")
+async def delete_book(book_title: str) -> dict[str, str]:
+    for book in BOOKS:
+        if book["title"].lower() == book_title.lower():
+            BOOKS.remove(book)
+            return {"message": "Book deleted successfully"}
+    return {"message": "Book not found"}
