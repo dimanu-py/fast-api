@@ -8,6 +8,8 @@ BOOKS = [
     {"title": "To Kill a Mockingbird", "author": "Harper Lee", "category": "Novel"},
     {"title": "Beloved", "author": "Toni Morrison", "category": "Magical Realism"},
     {"title": "Dune", "author": "Frank Herbert", "category": "Science Fiction"},
+    {"title": "The Hobbit", "author": "J.R.R. Tolkien", "category": "Novel"},
+    {"title": "The Lord of the Rings", "author": "J.R.R. Tolkien", "category": "Fantasy"},
 ]
 
 @app.get("/")
@@ -32,3 +34,8 @@ async def read_book(book_title: str) -> dict[str, str]:
 @app.get("/books/")
 async def filter_books_by_category(category: str) -> list[dict[str, str]]:
     return [book for book in BOOKS if book["category"].lower() == category.lower()]
+
+
+@app.get("/books/{author}/")
+async def filter_books_by_author_and_category(author: str, category: str) -> list[dict[str, str]]:
+    return [book for book in BOOKS if book["author"].lower() == author.lower() and book["category"].lower() == category.lower()]
