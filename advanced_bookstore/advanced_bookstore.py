@@ -24,5 +24,9 @@ async def read_all_books():
 @app.post("/books/create_book")
 async def create_book(book: BookRequest) -> dict[str, str]:
     new_book = Book(**book.model_dump())
-    books.append(new_book)
+    books.append(generate_book_id(new_book))
     return {"message": "Book has been successfully created"}
+
+def generate_book_id(book: Book) -> Book:
+    book.id = len(books) + 1
+    return book
