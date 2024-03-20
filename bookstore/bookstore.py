@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 
 app = FastAPI()
 
@@ -39,3 +39,9 @@ async def filter_books_by_category(category: str) -> list[dict[str, str]]:
 @app.get("/books/{author}/")
 async def filter_books_by_author_and_category(author: str, category: str) -> list[dict[str, str]]:
     return [book for book in BOOKS if book["author"].lower() == author.lower() and book["category"].lower() == category.lower()]
+
+
+@app.post("/books/create_book")
+async def create_book(book: dict[str, str] = Body()) -> dict[str, str]:
+    BOOKS.append(book)
+    return {"message": "Book created successfully"}
