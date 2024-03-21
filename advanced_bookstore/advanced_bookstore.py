@@ -1,6 +1,7 @@
 from typing import Any
 
 from fastapi import FastAPI, Path, Query, HTTPException
+from starlette import status
 
 from advanced_bookstore.book import Book
 from advanced_bookstore.request_schema import BookRequest
@@ -19,12 +20,12 @@ books = [
 ]
 
 
-@app.get("/books", response_model=list[BookResponse])
+@app.get("/books", response_model=list[BookResponse], status_code=status.HTTP_200_OK)
 async def read_all_books() -> Any:
     return books
 
 
-@app.get("/books/{book_id}", response_model=BookResponse)
+@app.get("/books/{book_id}", response_model=BookResponse, status_code=status.HTTP_200_OK)
 async def read_book(book_id: int = Path(gt=0)) -> Any:
     for book in books:
         if book.id == book_id:
@@ -32,35 +33,35 @@ async def read_book(book_id: int = Path(gt=0)) -> Any:
     raise HTTPException(status_code=404, detail=f"Book with id {book_id} not found")
 
 
-@app.get("/books/publish/", response_model=list[BookResponse])
+@app.get("/books/publish/", response_model=list[BookResponse], status_code=status.HTTP_200_OK)
 async def filter_books_by_published_date(published_date: str = Query(..., description="When the book was published")) -> Any:
     filtered_books = [book for book in books if str(book.published_date) == published_date]
     return filtered_books
 
 
-@app.post("/books/create_book")
+@app.post("/books/create_book", status_code=status.HTTP_201_CREATED)
 async def create_book(book: BookRequest) -> dict[str, str]:
     new_book = Book(**book.model_dump())
     books.append(generate_book_id(new_book))
     return {"message": "Book has been successfully created"}
 
 
-@app.put("/books/update_book")
-async def update_book(book: BookRequest) -> dict[str, str]:
+@app.put("/books/update_book", status_code=status.HTTP_204_NO_CONTENT)
+async def update_book(book: BookRequest) -> None:
     for idx, book_to_update in enumerate(books):
         if book_to_update.id == book.book_id:
             book_to_update = Book(**book.model_dump())
             books[idx] = book_to_update
-            return {"message": "Book has been successfully updated"}
+            return
     raise HTTPException(status_code=404, detail=f"Book with id {book.book_id} not found")
 
 
-@app.delete("/books/delete/{book_id}")
-async def delete_book(book_id: int = Path(gt=0)) -> dict[str, str]:
+@app.delete("/books/delete/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_book(book_id: int = Path(gt=0)) -> None:
     for book in books:
         if book.id == book_id:
             books.remove(book)
-            return {"message": "Book has been successfully deleted"}
+            return
     raise HTTPException(status_code=404, detail=f"Book with id {book_id} not found")
 
 
