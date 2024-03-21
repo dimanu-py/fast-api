@@ -32,6 +32,12 @@ async def read_book(book_id: int) -> Any:
     return {"message": "Book not found"}
 
 
+@app.get("/books/publish/", response_model=list[BookResponse])
+async def filter_books_by_published_date(published_date: str) -> Any:
+    filtered_books = [book for book in books if str(book.published_date) == published_date]
+    return filtered_books
+
+
 @app.post("/books/create_book")
 async def create_book(book: BookRequest) -> dict[str, str]:
     new_book = Book(**book.model_dump())
