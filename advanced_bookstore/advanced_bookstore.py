@@ -49,6 +49,15 @@ async def update_book(book: BookRequest) -> dict[str, str]:
     return {"message": "Book not found"}
 
 
+@app.delete("/books/delete/{book_id}")
+async def delete_book(book_id: int) -> dict[str, str]:
+    for book in books:
+        if book.id == book_id:
+            books.remove(book)
+            return {"message": "Book has been successfully deleted"}
+    return {"message": "Book not found"}
+
+
 def generate_book_id(book: Book) -> Book:
     book.id = len(books) + 1
     return book
