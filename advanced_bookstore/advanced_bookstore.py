@@ -38,6 +38,17 @@ async def create_book(book: BookRequest) -> dict[str, str]:
     books.append(generate_book_id(new_book))
     return {"message": "Book has been successfully created"}
 
+
+@app.put("/books/update_book")
+async def update_book(book: BookRequest) -> dict[str, str]:
+    for idx, book_to_update in enumerate(books):
+        if book_to_update.id == book.book_id:
+            book_to_update = Book(**book.model_dump())
+            books[idx] = book_to_update
+            return {"message": "Book has been successfully updated"}
+    return {"message": "Book not found"}
+
+
 def generate_book_id(book: Book) -> Book:
     book.id = len(books) + 1
     return book
