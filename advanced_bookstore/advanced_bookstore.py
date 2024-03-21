@@ -21,6 +21,14 @@ async def read_all_books():
     return books
 
 
+@app.get("/books/{book_id}")
+async def read_book(book_id: int):
+    for book in books:
+        if book.id == book_id:
+            return book
+    return {"message": "Book not found"}
+
+
 @app.post("/books/create_book")
 async def create_book(book: BookRequest) -> dict[str, str]:
     new_book = Book(**book.model_dump())
