@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Path
 
 from advanced_bookstore.book import Book
 from advanced_bookstore.request_schema import BookRequest
@@ -25,7 +25,7 @@ async def read_all_books() -> Any:
 
 
 @app.get("/books/{book_id}", response_model=BookResponse)
-async def read_book(book_id: int) -> Any:
+async def read_book(book_id: int = Path(gt=0)) -> Any:
     for book in books:
         if book.id == book_id:
             return book
@@ -56,7 +56,7 @@ async def update_book(book: BookRequest) -> dict[str, str]:
 
 
 @app.delete("/books/delete/{book_id}")
-async def delete_book(book_id: int) -> dict[str, str]:
+async def delete_book(book_id: int = Path(gt=0)) -> dict[str, str]:
     for book in books:
         if book.id == book_id:
             books.remove(book)
