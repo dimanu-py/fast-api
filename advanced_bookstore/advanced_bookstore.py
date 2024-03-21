@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import FastAPI, Path
+from fastapi import FastAPI, Path, Query
 
 from advanced_bookstore.book import Book
 from advanced_bookstore.request_schema import BookRequest
@@ -33,7 +33,7 @@ async def read_book(book_id: int = Path(gt=0)) -> Any:
 
 
 @app.get("/books/publish/", response_model=list[BookResponse])
-async def filter_books_by_published_date(published_date: str) -> Any:
+async def filter_books_by_published_date(published_date: str = Query(..., description="When the book was published")) -> Any:
     filtered_books = [book for book in books if str(book.published_date) == published_date]
     return filtered_books
 
