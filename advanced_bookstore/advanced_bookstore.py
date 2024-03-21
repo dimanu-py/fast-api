@@ -1,7 +1,10 @@
+from typing import Any
+
 from fastapi import FastAPI
 
 from advanced_bookstore.book import Book
 from advanced_bookstore.request_schema import BookRequest
+from advanced_bookstore.response_schema import BookResponse
 
 app = FastAPI()
 
@@ -16,13 +19,13 @@ books = [
 ]
 
 
-@app.get("/books")
-async def read_all_books():
+@app.get("/books", response_model=list[BookResponse])
+async def read_all_books() -> Any:
     return books
 
 
-@app.get("/books/{book_id}")
-async def read_book(book_id: int):
+@app.get("/books/{book_id}", response_model=BookResponse)
+async def read_book(book_id: int) -> Any:
     for book in books:
         if book.id == book_id:
             return book
