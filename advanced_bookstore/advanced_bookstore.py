@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import FastAPI, Path, Query
+from fastapi import FastAPI, Path, Query, HTTPException
 
 from advanced_bookstore.book import Book
 from advanced_bookstore.request_schema import BookRequest
@@ -29,7 +29,7 @@ async def read_book(book_id: int = Path(gt=0)) -> Any:
     for book in books:
         if book.id == book_id:
             return book
-    return {"message": "Book not found"}
+    raise HTTPException(status_code=404, detail=f"Book with id {book_id} not found")
 
 
 @app.get("/books/publish/", response_model=list[BookResponse])
@@ -52,7 +52,7 @@ async def update_book(book: BookRequest) -> dict[str, str]:
             book_to_update = Book(**book.model_dump())
             books[idx] = book_to_update
             return {"message": "Book has been successfully updated"}
-    return {"message": "Book not found"}
+    raise HTTPException(status_code=404, detail=f"Book with id {book.book_id} not found")
 
 
 @app.delete("/books/delete/{book_id}")
@@ -61,7 +61,7 @@ async def delete_book(book_id: int = Path(gt=0)) -> dict[str, str]:
         if book.id == book_id:
             books.remove(book)
             return {"message": "Book has been successfully deleted"}
-    return {"message": "Book not found"}
+    raise HTTPException(status_code=404, detail=f"Book with id {book_id} not found")
 
 
 def generate_book_id(book: Book) -> Book:
