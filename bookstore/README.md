@@ -23,20 +23,29 @@ with the corresponding code.
 
 ## How to run the project
 
-This project has been developed with Python 3.11.5 and FastAPI 0.110.0. You can install the dependencies with the following command:
+This project has been developed with Python 3.11.8 and FastAPI 0.110.0. To install the dependencies follow these steps:
 
-```bash
-pip install -r requirements.txt
-```
+1. Create a virtual environment with Python 3.11.8. You can do this running the command below:
+    
+    ```bash
+    python3.11 -m venv venv
+    ```
+2. Install `pipenv` if you don't have it yet:
 
-Then, you can run the project with the following command
+    ```bash
+    pip install pipenv
+    ```
+3. Install the dependencies with the following command:
+     
+    ```bash
+    pipenv install
+    ```
+
+Then, you can run the project running `uvicorn advanced_bookstore:app --reload` or `pipenv run uvicorn advanced_bookstore:app --reload`.
 
 > [!IMPORTANT]
 > You need to be inside the package folder to run the previous command. In this case you need to be inside _bookstore_ folder.
 
-```bash
-uvicorn bookstore:app --reload
-```
 
 Where:
 - `bookstore` is the name of the file where the FastAPI app is defined
