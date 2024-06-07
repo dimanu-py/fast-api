@@ -6,6 +6,7 @@ from starlette import status
 
 from todo_list import models
 from todo_list.database import engine, SessionLocal
+from todo_list.schemas import TodoRequest
 
 app = FastAPI()
 
@@ -33,3 +34,11 @@ async def get_todo_by_id(todo_id: int = Path(gt=0), db: Session = Depends(get_da
         return selected_todo
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Todo not with id {todo_id} not found")
+
+
+@app.post("/todo", status_code=status.HTTP_201_CREATED)
+async def create_todo(todo: TodoRequest, db: Session = Depends(get_database)) -> None:
+    new_todo = models.Todos(**todo.dict())
+
+    db.add(new_todo)
+    db.commit()
