@@ -42,3 +42,19 @@ async def create_todo(todo: TodoRequest, db: Session = Depends(get_database)) ->
 
     db.add(new_todo)
     db.commit()
+
+
+@app.put("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def update_todo(todo: TodoRequest, todo_id: int = Path(gt=0), db: Session = Depends(get_database)) -> None:
+    selected_todo = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
+
+    if selected_todo is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Todo with id {todo_id} not found")
+
+    selected_todo.title = todo.title
+    selected_todo.description = todo.description
+    selected_todo.priority = todo.priority
+    selected_todo.completed = todo.completed
+
+    db.add(selected_todo)
+    db.commit()
