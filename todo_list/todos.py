@@ -58,3 +58,14 @@ async def update_todo(todo: TodoRequest, todo_id: int = Path(gt=0), db: Session 
 
     db.add(selected_todo)
     db.commit()
+
+
+@app.delete("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_todo(todo_id: int = Path(gt=0), db: Session = Depends(get_database)) -> None:
+    selected_todo = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
+
+    if selected_todo is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Todo with id {todo_id} not found")
+
+    db.delete(selected_todo)
+    db.commit()
