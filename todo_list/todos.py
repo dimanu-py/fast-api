@@ -1,6 +1,6 @@
 from typing import Generator
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -27,7 +27,7 @@ async def read_all_todos(db: Session = Depends(get_database)):
 
 
 @app.get("/todo/{todo_id}", status_code=status.HTTP_200_OK)
-async def get_todo_by_id(todo_id: int, db: Session = Depends(get_database)):
+async def get_todo_by_id(todo_id: int = Path(gt=0), db: Session = Depends(get_database)):
     selected_todo = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
     if selected_todo is not None:
         return selected_todo
