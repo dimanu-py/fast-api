@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from todo_list.database import SessionLocal
-from todo_list.models import Todos
-from todo_list.schemas import TodoRequest
+from todo_list.models.todos import Todos
+from todo_list.schemas.todos import TodoRequest
 
 router = APIRouter(prefix="/todo", tags=["Todos"])
 
