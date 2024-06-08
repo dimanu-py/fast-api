@@ -9,6 +9,7 @@ uvicorn = {extras = ["standard"], version = "0.28.0"}
 sqlalchemy = "2.0.29"
 email-validator = "*"
 bcrypt = "*"
+python-multipart = "*"
 
 [dev-packages]
 
