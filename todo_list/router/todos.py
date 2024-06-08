@@ -1,22 +1,12 @@
-from typing import Generator
-
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from starlette import status
 
-from todo_list.database import SessionLocal
+from todo_list.database import get_database
 from todo_list.models.todos import Todos
 from todo_list.schemas.todos import TodoRequest
 
 router = APIRouter(prefix="/todo", tags=["Todos"])
-
-
-def get_database() -> Generator[SessionLocal, None, None]:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.get("/", status_code=status.HTTP_200_OK)
