@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 
 from todo_list.database import Base
 
@@ -10,4 +10,5 @@ class Todos(Base):
     title = Column(String, index=True)
     description = Column(String, index=True)
     priority = Column(Integer, index=True)
-    completed = Column(Boolean, index=True)
+    completed = Column(Boolean, index=False)
+    owner = Column(Integer, ForeignKey("users.id"), index=True)
