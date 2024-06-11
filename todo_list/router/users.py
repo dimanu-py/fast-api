@@ -1,7 +1,7 @@
 import bcrypt
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from starlette import status
 
 from todo_list.database import get_database
 from todo_list.models.users import Users
@@ -29,3 +29,15 @@ async def create_user(user: UserRequest, db: Session = Depends(get_database)) ->
 
     db.add(new_user)
     db.commit()
+
+
+@router.post("/login", status_code=status.HTTP_200_OK)
+async def login_for_access_token(form_data=Depends(OAuth2PasswordRequestForm), db: Session = Depends(get_database)):
+    user = db.query(Users).filter(Users.username == form_data.username).first()
+
+    if not user:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with username {form_data.username} not found")
+    if not bcrypt.checkpw(form_data.password.encode("utf-8"), user.hashed_password.encode("utf-8")):
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
+
+    return {"message": "User authenticated successfully"}
