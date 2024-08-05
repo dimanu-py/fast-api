@@ -10,6 +10,7 @@ sqlalchemy = "2.0.29"
 email-validator = "*"
 bcrypt = "*"
 python-multipart = "*"
+python-jose = { extras = ["cryptography"], version = "*" }
 
 [dev-packages]
 
