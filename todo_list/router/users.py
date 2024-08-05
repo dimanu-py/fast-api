@@ -28,3 +28,10 @@ async def create_user(user: UserRequest, db: Database) -> None:
 
     db.add(new_user)
     db.commit()
+
+
+@router.get("/", status_code=status.HTTP_200_OK)
+async def get_logged_user(user: AuthUser, db: Database) -> None:
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User authentication failed")
+    return db.query(Users).filter_by(id=user.get("id")).first()
