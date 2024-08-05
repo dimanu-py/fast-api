@@ -2,8 +2,8 @@ from datetime import timedelta, datetime, timezone
 
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
-from jose import jwt
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 from todo_list.database import get_database
@@ -16,6 +16,8 @@ router = APIRouter(prefix="/user", tags=["Users"])
 
 SECRET_KEY = "29bb1a587cfccb051b271484e593e08eda02c1b470c767a424fcbe5cee5a4186"
 ALGORITHM = "HS256"
+
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="user/login")
 
 
 def hash_password(password: str) -> str:
@@ -31,6 +33,18 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta) -
         "exp": datetime.now(timezone.utc) + expires_delta
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+
+async def get_authenticated_user(token: str = Depends(oauth2_bearer)) -> dict[str, str | int]:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        user_id = payload.get("user_id")
+        if username is None or user_id is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        return {"username": username, "id": user_id}
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
