@@ -1,9 +1,9 @@
 import bcrypt
-from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, status, HTTPException
 
-from todo_list.database import get_database
+from todo_list.database import Database
 from todo_list.models.users import Users
+from todo_list.router.auth import AuthUser
 from todo_list.schemas.users import UserRequest
 
 router = APIRouter(prefix="/user", tags=["Users"])
@@ -16,7 +16,7 @@ def hash_password(password: str) -> str:
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserRequest, db: Session = Depends(get_database)) -> None:
+async def create_user(user: UserRequest, db: Database) -> None:
     new_user = Users(
         role=user.role,
         username=user.username,

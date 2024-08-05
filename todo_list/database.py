@@ -1,8 +1,9 @@
-from typing import Generator
+from typing import Generator, Annotated
 
+from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 
 DATABASE_URL = "sqlite:///todo_list/todos_application.db"
 
@@ -17,3 +18,6 @@ def get_database() -> Generator[SessionLocal, None, None]:
         yield db
     finally:
         db.close()
+
+
+Database = Annotated[Session, Depends(get_database)]

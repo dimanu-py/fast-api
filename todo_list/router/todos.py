@@ -1,17 +1,13 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, HTTPException, Path
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException, Path
 from starlette import status
 
-from todo_list.database import get_database
+from todo_list.database import Database
 from todo_list.models.todos import Todos
-from todo_list.router.auth import get_authenticated_user
+from todo_list.router.auth import AuthUser
 from todo_list.schemas.todos import TodoRequest
 
 router = APIRouter(prefix="/todo", tags=["Todos"])
 
-Database = Annotated[Session, Depends(get_database)]
 AuthUser = Annotated[dict[str, str], Depends(get_authenticated_user)]
 
 @router.get("/", status_code=status.HTTP_200_OK)

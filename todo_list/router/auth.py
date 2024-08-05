@@ -1,13 +1,13 @@
 from datetime import timedelta, datetime, timezone
+from typing import Annotated
 
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
-from sqlalchemy.orm import Session
 from starlette import status
 
-from todo_list.database import get_database
+from todo_list.database import Database
 from todo_list.models.users import Users
 from todo_list.schemas.users import Token
 
@@ -42,7 +42,7 @@ async def get_authenticated_user(token: str = Depends(oauth2_bearer)) -> dict[st
 
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=Token)
-async def login_for_access_token(form_data=Depends(OAuth2PasswordRequestForm), db: Session = Depends(get_database)):
+async def login_for_access_token(db: Database, form_data=Depends(OAuth2PasswordRequestForm)):
     user = db.query(Users).filter(Users.username == form_data.username).first()
 
     if not user:
