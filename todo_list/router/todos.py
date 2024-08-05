@@ -11,13 +11,18 @@ router = APIRouter(prefix="/todo", tags=["Todos"])
 
 
 @router.get("/", status_code=status.HTTP_200_OK)
-async def read_all_todos(db: Session = Depends(get_database)):
-    return db.query(Todos).all()
+async def read_all_todos(db: Session = Depends(get_database), user: dict[str, str] = Depends(get_authenticated_user)):
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User authentication failed")
+    return db.query(Todos).filter(Todos.owner == user.get("id")).all()
 
 
 @router.get("/{todo_id}", status_code=status.HTTP_200_OK)
-async def get_todo_by_id(todo_id: int = Path(gt=0), db: Session = Depends(get_database)):
-    selected_todo = db.query(Todos).filter(Todos.id == todo_id).first()
+async def get_todo_by_id(todo_id: int = Path(gt=0), db: Session = Depends(get_database),
+                         user: dict[str, str] = Depends(get_authenticated_user)):
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User authentication failed")
+    selected_todo = db.query(Todos).filter_by(id=todo_id, owner=user.get("id")).first()
     if selected_todo is not None:
         return selected_todo
 
@@ -37,8 +42,12 @@ async def create_todo(todo: TodoRequest, db: Session = Depends(get_database),
 
 
 @router.put("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def update_todo(todo: TodoRequest, todo_id: int = Path(gt=0), db: Session = Depends(get_database)) -> None:
-    selected_todo = db.query(Todos).filter(Todos.id == todo_id).first()
+async def update_todo(todo: TodoRequest, todo_id: int = Path(gt=0), db: Session = Depends(get_database),
+                      user: dict[str, str] = Depends(get_authenticated_user)) -> None:
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User authentication failed")
+
+    selected_todo = db.query(Todos).filter_by(id=todo_id, owner=user.get("id")).first()
 
     if selected_todo is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Todo with id {todo_id} not found")
@@ -53,8 +62,12 @@ async def update_todo(todo: TodoRequest, todo_id: int = Path(gt=0), db: Session 
 
 
 @router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_todo(todo_id: int = Path(gt=0), db: Session = Depends(get_database)) -> None:
-    selected_todo = db.query(Todos).filter(Todos.id == todo_id).first()
+async def delete_todo(todo_id: int = Path(gt=0), db: Session = Depends(get_database),
+                      user: dict[str, str] = Depends(get_authenticated_user)) -> None:
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User authentication failed")
+
+    selected_todo = db.query(Todos).filter_by(id=todo_id, owner=user.get("id")).first()
 
     if selected_todo is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Todo with id {todo_id} not found")
