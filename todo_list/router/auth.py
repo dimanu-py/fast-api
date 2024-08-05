@@ -20,10 +20,11 @@ ALGORITHM = "HS256"
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
-def create_access_token(username: str, user_id: int, expires_delta: timedelta) -> str:
+def create_access_token(username: str, user_id: int, user_role: str, expires_delta: timedelta) -> str:
     payload = {
         "sub": username,
         "user_id": user_id,
+        "role": user_role,
         "exp": datetime.now(timezone.utc) + expires_delta
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
@@ -34,9 +35,10 @@ async def get_authenticated_user(token: str = Depends(oauth2_bearer)) -> dict[st
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
         user_id = payload.get("user_id")
+        user_role = payload.get("role")
         if username is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-        return {"username": username, "id": user_id}
+        return {"username": username, "id": user_id, "role": user_role}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
@@ -50,7 +52,7 @@ async def login_for_access_token(db: Database, form_data=Depends(OAuth2PasswordR
     if not bcrypt.checkpw(form_data.password.encode("utf-8"), user.hashed_password.encode("utf-8")):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
 
-    access_token = create_access_token(user.username, user.id, timedelta(minutes=EXPIRE_TIME))
+    access_token = create_access_token(user.username, user.id, user.role, timedelta(minutes=EXPIRE_TIME))
 
     return {"access_token": access_token, "token_type": "bearer"}
 
