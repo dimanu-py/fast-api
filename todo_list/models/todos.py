@@ -11,4 +11,4 @@ class Todos(Base):
     description = Column(String, index=True)
     priority = Column(Integer, index=True)
     completed = Column(Boolean, index=False)
-    owner = Column(Integer, ForeignKey("users.id"), index=True)
+    owner = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), index=True)
