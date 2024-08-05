@@ -20,3 +20,8 @@ class UserRequest(BaseModel):
                 "password": "password123"
             }
         }
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from todo_list.database import get_database
 from todo_list.models.users import Users
-from todo_list.schemas.users import UserRequest
+from todo_list.schemas.users import UserRequest, Token
 
 EXPIRE_TIME = 20
 
@@ -48,7 +48,7 @@ async def create_user(user: UserRequest, db: Session = Depends(get_database)) ->
     db.commit()
 
 
-@router.post("/login", status_code=status.HTTP_200_OK)
+@router.post("/login", status_code=status.HTTP_200_OK, response_model=Token)
 async def login_for_access_token(form_data=Depends(OAuth2PasswordRequestForm), db: Session = Depends(get_database)):
     user = db.query(Users).filter(Users.username == form_data.username).first()
 
@@ -59,4 +59,4 @@ async def login_for_access_token(form_data=Depends(OAuth2PasswordRequestForm), d
 
     access_token = create_access_token(user.username, user.id, timedelta(minutes=EXPIRE_TIME))
 
-    return access_token
+    return {"access_token": access_token, "token_type": "bearer"}
