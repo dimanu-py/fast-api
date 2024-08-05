@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
 
 from todo_list.database import Base
 
@@ -12,3 +14,4 @@ class Todos(Base):
     priority = Column(Integer)
     completed = Column(Boolean)
     owner = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"))
+    due_time = Column(DateTime, nullable=False, default=datetime.utcnow)
