@@ -8,7 +8,6 @@ from todo_list.schemas.todos import TodoRequest
 
 router = APIRouter(prefix="/todo", tags=["Todos"])
 
-AuthUser = Annotated[dict[str, str], Depends(get_authenticated_user)]
 
 @router.get("/", status_code=status.HTTP_200_OK)
 async def read_all_todos(db: Database, user: AuthUser):

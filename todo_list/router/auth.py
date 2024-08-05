@@ -53,3 +53,6 @@ async def login_for_access_token(db: Database, form_data=Depends(OAuth2PasswordR
     access_token = create_access_token(user.username, user.id, timedelta(minutes=EXPIRE_TIME))
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+AuthUser = Annotated[dict[str, str], Depends(get_authenticated_user)]
