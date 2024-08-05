@@ -8,6 +8,7 @@ class UserRequest(BaseModel):
     first_name: str = Field(min_length=1)
     last_name: str = Field(min_length=1)
     password: str = Field(min_length=3)
+    phone_number: str = Field(min_length=9, max_length=9)
 
     class Config:
         json_schema_extra = {
@@ -17,7 +18,8 @@ class UserRequest(BaseModel):
                 "email": "email.example@domain.com",
                 "first_name": "John",
                 "last_name": "Doe",
-                "password": "password123"
+                "password": "password123",
+                "phone_number": "123456789"
             }
         }
 

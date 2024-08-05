@@ -24,6 +24,7 @@ async def create_user(user: UserRequest, db: Database) -> None:
         first_name=user.first_name,
         last_name=user.last_name,
         hashed_password=hash_password(user.password),
+        phone_number=user.phone_number
     )
 
     db.add(new_user)
