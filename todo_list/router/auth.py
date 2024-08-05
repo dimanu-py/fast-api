@@ -46,9 +46,9 @@ async def login_for_access_token(db: Database, form_data=Depends(OAuth2PasswordR
     user = db.query(Users).filter(Users.username == form_data.username).first()
 
     if not user:
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with username {form_data.username} not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with username {form_data.username} not found")
     if not bcrypt.checkpw(form_data.password.encode("utf-8"), user.hashed_password.encode("utf-8")):
-        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
 
     access_token = create_access_token(user.username, user.id, timedelta(minutes=EXPIRE_TIME))
 
