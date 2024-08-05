@@ -6,7 +6,7 @@ from starlette import status
 
 from todo_list.database import get_database
 from todo_list.models.todos import Todos
-from todo_list.router.users import get_authenticated_user
+from todo_list.router.auth import get_authenticated_user
 from todo_list.schemas.todos import TodoRequest
 
 router = APIRouter(prefix="/todo", tags=["Todos"])
