@@ -11,6 +11,7 @@ email-validator = "*"
 bcrypt = "*"
 python-multipart = "*"
 python-jose = { extras = ["cryptography"], version = "*" }
+psycopg2-binary = "*"
 
 [dev-packages]
 
