@@ -24,7 +24,7 @@ async def get_todo_by_id(db: Database, user: AuthUser, todo_id: int = Path(gt=0)
     if selected_todo is not None:
         return selected_todo
 
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Todo not with id {todo_id} not found")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Todo with id {todo_id} not found")
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

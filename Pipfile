@@ -13,6 +13,8 @@ python-multipart = "*"
 python-jose = { extras = ["cryptography"], version = "*" }
 psycopg2-binary = "*"
 alembic = "*"
+pytest = "*"
+httpx = "*"
 
 [dev-packages]
 
